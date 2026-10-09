@@ -239,6 +239,12 @@ DEF_OP(ProcessorID) {
     mrs(GetReg(Node), ARMEmitter::SystemRegister::TPIDRRO_EL0);
     return;
   }
+#ifdef __APPLE__
+  // macOS has no getcpu, and the Linux path below would issue an unrelated system call. CPU 0 matches
+  // FHU::Syscalls::getcpu and the APIC ID that CPUID reports there.
+  mov(ARMEmitter::Size::i64Bit, GetReg(Node), ARMEmitter::Reg::zr);
+  return;
+#endif
 #ifdef _WIN32
   else {
     // If on Windows and TPIDRRO isn't supported (like in wine), then this is a programming error.
