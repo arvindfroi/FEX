@@ -79,7 +79,7 @@ namespace x64 {
     ARMEmitter::Reg::r8, ARMEmitter::Reg::r16, ARMEmitter::Reg::r17,
   };
 
-#ifdef FEX_IOS_HOST
+#if defined(FEX_IOS_HOST) || defined(__APPLE__)
   // On Apple platforms, x18 is reserved for platform TLS. Do not use it.
   constexpr std::array<ARMEmitter::Register, 6> RA = {
     // All these callee saved
