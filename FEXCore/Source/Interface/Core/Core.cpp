@@ -1421,6 +1421,7 @@ uintptr_t ContextImpl::CompileBlock(FEXCore::Core::CpuStateFrame* Frame, uint64_
    * reached via its x64 fast-forward sequence -- preserves the x4/x5 varargs contract that
    * the emulation round trip destroys; see Module.S). Same change-detection pattern as
    * [cb-entry] below: CompileBlock runs often enough to notice promptly. */
+#ifdef FEX_IOS_HOST
   {
     static uint64_t FfsLastCount = 0;
     static uint32_t FfsReports = 0;
@@ -1447,6 +1448,7 @@ uintptr_t ContextImpl::CompileBlock(FEXCore::Core::CpuStateFrame* Frame, uint64_
                         IosCbEntryLog[4], IosCbEntryLog[5], IosCbEntryLog[7]);
     }
   }
+#endif
 
   /* iOS-Madeira: refuse to compile obviously-invalid guest RIPs. After a
    * NULL-vtable virtual call (`call [rax+8]` with rax=0), control flow
@@ -1898,6 +1900,7 @@ uintptr_t ContextImpl::CompileBlock(FEXCore::Core::CpuStateFrame* Frame, uint64_
        * automatically healthy contention — it can equally be page reuse or a
        * foreign writer, so check block_index/list_size against block_count before
        * concluding anything. */
+#ifdef FEX_IOS_HOST
       {
         rpm_cas_snapshot Snap;
         if (rpm_cas_snapshot_take(&Snap)) {
@@ -1911,6 +1914,7 @@ uintptr_t ContextImpl::CompileBlock(FEXCore::Core::CpuStateFrame* Frame, uint64_
                             Snap.fail_changed, Snap.fail_unchanged, Snap.fail_invalid);
         }
       }
+#endif
     }
   }
 
