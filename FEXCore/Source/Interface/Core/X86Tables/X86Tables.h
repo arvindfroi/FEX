@@ -409,10 +409,11 @@ namespace InstFlags {
   constexpr InstFlagType SIZE_256BIT = 0b110;
   constexpr InstFlagType SIZE_64BITDEF = 0b111; // Default mode is 64bit instead of typical 32bit
 
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__APPLE__)
   constexpr uint32_t DEFAULT_SYSCALL_FLAGS = FLAGS_NO_OVERLAY;
 #else
                                                 // Syscall ends a block on WIN32 because the instruction can update the CPU's RIP.
+                                                // On Apple, AnyPS5's handler sets the RIP to continue at.
   constexpr uint32_t DEFAULT_SYSCALL_FLAGS = FLAGS_NO_OVERLAY | FLAGS_BLOCK_END;
 #endif
 
